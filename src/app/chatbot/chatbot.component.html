@@ -1,0 +1,67 @@
+<div class="container">
+  <div *ngIf="showPopup" class="popup">
+    <div class="popup-content">
+      <h2 class="mb-4 header">Set OpenAI API Key and Assistant ID</h2>
+      <div class="row input-box">
+        <div class="col">
+          <div class="form-group">
+            <label for="apiKey" class="form-label">OpenAI API Key</label>
+            <input type="text" id="apiKey" class="form-control custom-input custom-input-lg" [(ngModel)]="apiKey" placeholder="Enter your OpenAI API Key">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="assistantId" class="form-label">Assistant ID</label>
+            <input type="text" id="assistantId" class="form-control custom-input custom-input-lg" [(ngModel)]="assistantId" placeholder="Enter your Assistant ID">
+          </div>
+        </div>
+      </div>
+      <div class="popup-error">{{ popupError }}</div>
+      <div class="text-right mt-4 save-btn-container">
+        <button class="btn btn-primary btn-lg" (click)="saveCredentials()">Save</button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!showPopup" class="full-screen-container">
+    <div class="chat-container mt-5 fixed-bottom">
+      <div class="chat-messages" #chatMessagesContainer>
+        <ng-container *ngFor="let message of messages;">
+
+          <div *ngIf="isString(message)" class="message bg-light p-2 mb-2 rounded"> {{ message }} </div>
+          <div *ngIf="isObject(message)" class="weather-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Max temp</th>
+                  <th>Min temp</th>
+                  <th>Avg temp</th>
+                  <th>Condition</th>
+                </tr>
+              </thead>
+              <tbody *ngIf="message.weatherResponse && message.weatherResponse.length > 0">
+                <tr *ngFor="let weather of message.weatherResponse">
+                    <td>{{ weather.date }}</td>
+                    <td>{{ weather.day.maxtemp_c }}</td>
+                    <td>{{ weather.day.mintemp_c }}</td>
+                    <td>{{ weather.day.avgtemp_c }}</td>
+                    <td>{{ weather.day.condition.text }}</td>
+                </tr>
+            </tbody>
+
+            </table>
+          </div>
+        </ng-container>
+      </div>
+      <div class="chat-input mt-3">
+        <input type="text" [(ngModel)]="location" (keyup.enter)="sendMessage()" class="form-control custom-input custom-input-lg" placeholder="Enter location">
+        <button type="button" class="btn btn-primary btn-lg ml-2"
+          [disabled]="sendingMessage"
+          [ngClass]="{ 'disabled-button': sendingMessage }"
+          (click)="sendMessage()">
+          Send
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
